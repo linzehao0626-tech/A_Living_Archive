@@ -9,8 +9,8 @@
 #include <freertos/task.h>
 
 // A LIVING ARCHIVE — INTEGRATED V3 / AUDIO CUES / SERVO 170 DEG
-// ESP32-S3, Arduino ESP32 3.x. NO WIRING CHANGES.
-// Original MEMORY CORE V4 light effects retained.
+// ESP32-S3, Arduino ESP32 3.x.
+// Original MEMORY CORE light effects retained.
 
 #define LED_PIN 4
 #define LED_COUNT 16
@@ -29,11 +29,8 @@
 const uint8_t SERVO_PINS[5] = {2, 5, 17, 18, 21};
 // Set a direction to -1 only if that particular servo turns the wrong way.
 int8_t SERVO_DIRECTION[5] = {1, 1, 1, 1, 1};
-// User requested a nominal 170-degree sweep between CLOSED and WAKING.
 // Map conventional 1000-2000us / 0-180 degree instructions:
 // CLOSED = 5 degrees (1028us); WAKING = 175 degrees (1972us).
-// Real MG90S travel varies by manufacturer, so verify movement visually.
-// Tight fishing line may bind WELL BEFORE this range is safe.
 const uint16_t SERVO_CENTER_US = 1500;
 const uint16_t SERVO_CLOSED_US = 1028;
 const uint16_t SERVO_OPEN_US = 1972;
@@ -76,7 +73,7 @@ float shown[LED_COUNT][3] = {{0}};
 float transitionFrom[LED_COUNT][3] = {{0}};
 uint32_t lastLEDFrame = 0;
 
-// Five physical servos, automatically enabled; no 'e' command.
+// Five physical servos, automatically enabled
 bool servoAttached[5] = {false};
 bool servoStopped = false;
 uint16_t servoPosition[5] = {1500,1500,1500,1500,1500};
@@ -136,7 +133,7 @@ uint8_t toByte(float x) {
   x=constrain(x,0.0f,255.0f);return (uint8_t)(x+0.5f);
 }
 
-// ------------------ LOCKED MEMORY CORE V4 ------------------
+// ------------------------------------
 void lightColor(int mode,int led,float t,float &r,float &g,float &b) {
   float i=(float)led; r=g=b=0;
   if (mode==0) {
@@ -232,9 +229,8 @@ void updateLights() {
 }
 
 // ------------------------ SERVOS ------------------------
-// Nominal 170-degree total sweep between separately bounded endpoints.
-// WARNING: 170 degrees is near the physical limit and UNSAFE for taut fishing line unless tested.
-// Servos move in staggered slow steps; use x or external 5V off if binding.
+// 170-degree total sweep between separately bounded endpoints.
+// Servos move in staggered slow steps.
 void writeServoUs(int i,uint16_t pulse) {
   if(!servoAttached[i])return;
   uint32_t duty=((uint32_t)pulse*16384UL)/20000UL;
@@ -260,7 +256,7 @@ void setServoTargets(bool conceptualOpen) {
   if(servoStopped)return;
   for(int i=0;i<5;i++) {
     // Every activation moves between 5-degree and 175-degree
-    // nominal endpoints: 170-degree total commanded excursion.
+    // Endpoints: 170-degree total commanded excursion.
     // Reverse direction by setting SERVO_DIRECTION[i] to -1.
     int value = (SERVO_DIRECTION[i]>=0)
       ? (conceptualOpen ? SERVO_OPEN_US : SERVO_CLOSED_US)
@@ -507,7 +503,7 @@ void requestPlayback() {
 void enterArchiving() {
   if(state!=2)return;
   finishRecording();               // save first, then play cue
-  setServoTargets(false);         // return from nominal +20deg to center
+  setServoTargets(false);         // return from +20deg to center
   setState(3);
   queueCue(CUE_ARCHIVE);
 }
@@ -516,7 +512,7 @@ void shortTouch() {
   if(state==0) {
     stopPlaybackRequested=true;
     portENTER_CRITICAL(&audioMux);playRequested=false;portEXIT_CRITICAL(&audioMux);
-    setServoTargets(true);       // conceptual opening
+    setServoTargets(true);       // opening
     setState(1);
     queueCue(CUE_WAKE);
   } else if(state==2) {
@@ -580,7 +576,6 @@ void setup() {
   ring.begin();ring.setBrightness(190);ring.clear();ring.show();
   state=0;stateStarted=millis();
 
-  // Servo outputs initialise at neutral without an 'e' command.
   // Keep a hand near the external 5V OFF switch during first test.
   initServos();
 
