@@ -1,23 +1,3 @@
-/*
- A LIVING ARCHIVE — REFERENCE LOTUS V6 (PROCESSING 4, JAVA MODE)
-
- REBUILT from the user's supplied violet/pink point-mesh lotus reference.
- Not a rigid petal fan: 47 broad, overlapping silk-lattice 3D petals.
-  • Outer wings span almost the entire width of the screen
-  • Four progressively warmer/pinker crowns form a luminous inner cup
-  • Delicate, regular particle rows/columns with flexing translucent surfaces
-
- Controls: 1-4 states | T touch | SPACE auto | F reform | H hide overlay
- P palette | L lower detail | C ESP32 USB | S screenshot | drag orbit
- USB protocol (115200, newline terminated): supports both STATE,CLOSED / VOICE,0.50
- and final ESP32 firmware STATE:CLOSED / STATE:LISTENING,VOICE:0.50,TRACE:...
-
- Runs standalone without an ESP32. Requires the official Processing Serial
- library only when using the optional ESP32 bridge.
-
- This code has been syntax checked but NOT rendered on the user's Mac.
-*/
-
 import processing.serial.*;
 import java.util.ArrayList;
 
